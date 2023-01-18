@@ -43,14 +43,18 @@ renderEncoder.setVertexBytes(&matrix, length: MemoryLayout<float4x4>.stride, ind
 renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0,
                              vertexCount: vertices.count)
 
-let scaleX: Float = 1.2
-let scaleY: Float = 0.5
-matrix = float4x4(
-  [scaleX, 0, 0, 0],
-  [0, scaleY, 0, 0],
-  [0,      0, 1, 0],
-  [0,      0, 0, 1]
-)
+let angle = Float.pi / 2.0
+
+var distanceVector = float4(vertices.last!.x,
+                            vertices.last!.y,
+                            vertices.last!.z, 1)
+var translate = matrix_identity_float4x4
+translate.columns.3 = distanceVector
+var rotate = matrix_identity_float4x4
+rotate.columns.0 = [cos(angle), -sin(angle), 0, 0]
+rotate.columns.1 = [sin(angle), cos(angle), 0, 0]
+
+matrix = translate * rotate * translate.inverse
 
 renderEncoder.setVertexBytes(&matrix, length: MemoryLayout<float4x4>.stride, index: 1)
 
