@@ -15,15 +15,16 @@ public func setupMetal() {
   
 }
 public func createLibrary() -> MTLLibrary {
-  var library: MTLLibrary?
-  do {
-    let path = Bundle.main.path(forResource: "Shaders", ofType: "metal")
-    let source = try String(contentsOfFile: path!, encoding: .utf8)
-    library = try device.makeLibrary(source: source, options: nil)
-  } catch let error as NSError {
-    fatalError("library error: " + error.description)
-  }
-  return library!
+//  var library: MTLLibrary?
+//  do {
+//    let path = Bundle.main.path(forResource: "Shaders", ofType: "dat")
+//    let source = try String(contentsOfFile: path!, encoding: .utf8)
+//    library = try device.makeLibrary(source: source, options: nil)
+//  } catch let error as NSError {
+//    fatalError("library error: " + error.description)
+//  }
+//  return library!
+    device.makeDefaultLibrary()!
 }
 
 public func createPipelineState(library: MTLLibrary) -> MTLRenderPipelineState {
