@@ -32,6 +32,7 @@
 import MetalKit
 
 class Renderer: NSObject {
+    var scene: Scene?
   static var device: MTLDevice!
   static var commandQueue: MTLCommandQueue!
   static var library: MTLLibrary!
@@ -106,22 +107,24 @@ class Renderer: NSObject {
 
 extension Renderer: MTKViewDelegate {
   func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-    camera.aspect = Float(view.bounds.width)/Float(view.bounds.height)
+    scene?.sceneSizeWillChange(to: size)
   }
+
   
   func draw(in view: MTKView) {
     guard
       let descriptor = view.currentRenderPassDescriptor,
       let commandBuffer = Renderer.commandQueue.makeCommandBuffer(),
       let renderEncoder =
-      commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else {
+      commandBuffer.makeRenderCommandEncoder(descriptor: descriptor),
+      let scene = scene else {
         return
     }
     
     // update all the models' poses
     let deltaTime = 1 / Float(Renderer.fps)
     for model in models {
-      model.update(deltaTime: deltaTime)
+        scene.update(deltaTime: deltaTime)
     }
     
     renderEncoder.setDepthStencilState(depthStencilState)
@@ -135,13 +138,18 @@ extension Renderer: MTKViewDelegate {
                                    index: Int(BufferIndexLights.rawValue))
 
     // render all the models in the array
-    for model in models {
-      renderEncoder.pushDebugGroup(model.name)
-      model.render(renderEncoder: renderEncoder,
-                   uniforms: uniforms,
-                   fragmentUniforms: fragmentUniforms)
-      renderEncoder.popDebugGroup()
-    }
+//    for model in models {
+//      renderEncoder.pushDebugGroup(model.name)
+//      model.render(renderEncoder: renderEncoder,
+//                   uniforms: uniforms,
+//                   fragmentUniforms: fragmentUniforms)
+//      renderEncoder.popDebugGroup()
+//    }
+      for renderable in scene.renderables {
+          renderEncoder.pushDebugGroup(renderable.name)
+          renderable.render(renderEncoder: renderEncoder, uniforms: scene.uniforms, fragmentUniforms: scene.fragmentUniforms)
+          renderEncoder.popDebugGroup()
+      }
 
     renderEncoder.endEncoding()
     guard let drawable = view.currentDrawable else {

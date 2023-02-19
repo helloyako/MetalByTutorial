@@ -29,24 +29,28 @@
  * THE SOFTWARE.
  */
 
-import Cocoa
 
-extension ViewController {
-  func addGestureRecognizers(to view: NSView) {
-    let pan = NSPanGestureRecognizer(target: self, action: #selector(handlePan(gesture:)))
-    view.addGestureRecognizer(pan)
-  }
-  
-  @objc func handlePan(gesture: NSPanGestureRecognizer) {
-    let translation = gesture.translation(in: gesture.view)
-    let delta = float2(Float(translation.x),
-                       Float(translation.y))
-    
-      renderer?.scene?.camera.rotate(delta: delta)
-    gesture.setTranslation(.zero, in: gesture.view)
-  }
-  
-  override func scrollWheel(with event: NSEvent) {
-    renderer?.camera.zoom(delta: Float(event.deltaY))
-  }
+import Foundation
+
+class GameScene: Scene {
+    let ground = Model(name: "ground.obj")
+    let car = Model(name: "racing-car.obj")
+    let skeleton = Model(name: "skeleton.usda")
+
+    override func setupScene() {
+        ground.tiling = 32
+        add(node: ground)
+
+        car.rotation = [0, .pi / 2, 0]
+        car.position = [-0.8, 0, 0]
+        add(node: car)
+
+        skeleton.position = [1.6, 0, 0]
+        skeleton.rotation = [0, .pi, 0]
+        add(node: skeleton)
+
+        skeleton.runAnimation(name: "idle")
+
+        camera.position = [0, 1.2, -4]
+    }
 }

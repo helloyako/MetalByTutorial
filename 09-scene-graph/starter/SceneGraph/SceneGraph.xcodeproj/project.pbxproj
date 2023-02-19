@@ -47,6 +47,7 @@
 		13EE981422CACEF300D6065F /* ground.obj in Resources */ = {isa = PBXBuildFile; fileRef = 13EE980D22CACEF300D6065F /* ground.obj */; };
 		13EF5AE422CC391400696D69 /* Renderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13EF5AE322CC391400696D69 /* Renderable.swift */; };
 		A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06F1A5E29A1C297004D7ED7 /* Scene.swift */; };
+		A06F1A6129A26C6F004D7ED7 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06F1A6029A26C6F004D7ED7 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +96,7 @@
 		13EE980D22CACEF300D6065F /* ground.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ground.obj; sourceTree = "<group>"; };
 		13EF5AE322CC391400696D69 /* Renderable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderable.swift; sourceTree = "<group>"; };
 		A06F1A5E29A1C297004D7ED7 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		A06F1A6029A26C6F004D7ED7 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +195,7 @@
 				1384A37622C1B389006036BA /* Main.storyboard */,
 				1384A37922C1B389006036BA /* Info.plist */,
 				1384A37A22C1B389006036BA /* SceneGraph.entitlements */,
+				A06F1A6029A26C6F004D7ED7 /* GameScene.swift */,
 			);
 			path = "SceneGraph-macOS";
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 				13C8EBED22D862DB0071A2FF /* DebugBoundingBox.swift in Sources */,
 				1389964C22D429000010C9B1 /* GameView.swift in Sources */,
 				130F080C22C4343D001B7909 /* Node.swift in Sources */,
+				A06F1A6129A26C6F004D7ED7 /* GameScene.swift in Sources */,
 				A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

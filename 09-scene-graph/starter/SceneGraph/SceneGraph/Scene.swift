@@ -40,11 +40,75 @@ class Scene {
         cameras[currentCameraIndex]
     }
 
+    let rootNode = Node()
+    var renderables: [Renderable] = []
+    var uniforms = Uniforms()
+    var fragmentUniforms = FragmentUniforms()
+
     init(sceneSize: CGSize) {
         self.sceneSize = sceneSize
+        setupScene()
+        sceneSizeWillChange(to: sceneSize)
     }
 
     func setupScene() {
         // override this to add objects to the scene
+    }
+
+    final func update(deltaTime: Float) {
+        uniforms.projectionMatrix = camera.projectionMatrix
+        uniforms.viewMatrix = camera.viewMatrix
+        fragmentUniforms.cameraPosition = camera.position
+
+        updateScene(deltaTime: deltaTime)
+        update(nodes: rootNode.children, deltaTime: deltaTime)
+    }
+
+    private func update(nodes: [Node], deltaTime: Float) {
+        nodes.forEach { node in
+            node.update(deltaTime: deltaTime)
+            update(nodes: node.children, deltaTime: deltaTime)
+        }
+    }
+
+    func updateScene(deltaTime: Float) {
+        // override this to update your scene
+    }
+
+    final func add(node: Node, parent: Node? = nil, render: Bool = true) {
+        if let parent {
+            parent.add(childNode: node)
+        } else {
+            rootNode.add(childNode: node)
+        }
+
+        guard render, let renderable = node as? Renderable else {
+            return
+        }
+
+        renderables.append(renderable)
+    }
+
+    final func remove(node: Node) {
+        if let parent = node.parnet {
+            parent.remove(childNode: node)
+        } else {
+            for child in node.children {
+                child.parnet = nil
+            }
+            node.children = []
+        }
+
+        guard node is Renderable, let index = (renderables.firstIndex {
+            $0 as? Node === node
+        }) else { return }
+        renderables.remove(at: index)
+    }
+
+    func sceneSizeWillChange(to size: CGSize) {
+        for camera in cameras {
+            camera.aspect = Float(size.width / size.height)
+        }
+        sceneSize = size
     }
 }

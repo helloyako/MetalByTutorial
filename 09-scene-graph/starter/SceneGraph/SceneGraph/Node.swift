@@ -32,6 +32,8 @@
 import MetalKit
 
 class Node {
+    var parnet: Node?
+    var children: [Node] = []
   var name: String = "untitled"
   var position: float3 = [0, 0, 0]
   var rotation: float3 = [0, 0, 0] {
@@ -58,6 +60,27 @@ class Node {
   func update(deltaTime: Float) {
     // override this
   }
+
+    final func add(childNode: Node) {
+        children.append(childNode)
+        childNode.parnet = self
+    }
+
+    final func remove(childNode: Node) {
+        for child in childNode.children {
+            child.parnet = self
+            children.append(child)
+        }
+
+        childNode.children = []
+        guard let index = (children.firstIndex {
+            $0 === childNode
+        }) else {
+            return
+        }
+        children.remove(at: index)
+        childNode.parnet = nil
+    }
 
 }
 
