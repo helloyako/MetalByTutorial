@@ -46,6 +46,7 @@
 		13EE981222CACEF300D6065F /* ground.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 13EE980C22CACEF300D6065F /* ground.mtl */; };
 		13EE981422CACEF300D6065F /* ground.obj in Resources */ = {isa = PBXBuildFile; fileRef = 13EE980D22CACEF300D6065F /* ground.obj */; };
 		13EF5AE422CC391400696D69 /* Renderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13EF5AE322CC391400696D69 /* Renderable.swift */; };
+		A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06F1A5E29A1C297004D7ED7 /* Scene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		13EE980C22CACEF300D6065F /* ground.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ground.mtl; sourceTree = "<group>"; };
 		13EE980D22CACEF300D6065F /* ground.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ground.obj; sourceTree = "<group>"; };
 		13EF5AE322CC391400696D69 /* Renderable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderable.swift; sourceTree = "<group>"; };
+		A06F1A5E29A1C297004D7ED7 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 				13A7ABC722C2374C00609310 /* Utility */,
 				1384A39622C1DFC2006036BA /* Models */,
 				1384A37422C1B389006036BA /* Assets.xcassets */,
+				A06F1A5E29A1C297004D7ED7 /* Scene.swift */,
 			);
 			path = SceneGraph;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				13C8EBED22D862DB0071A2FF /* DebugBoundingBox.swift in Sources */,
 				1389964C22D429000010C9B1 /* GameView.swift in Sources */,
 				130F080C22C4343D001B7909 /* Node.swift in Sources */,
+				A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
