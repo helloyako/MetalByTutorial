@@ -53,4 +53,8 @@ class GameScene: Scene {
 
         camera.position = [0, 1.2, -4]
     }
+
+    override func updateScene(deltaTime: Float) {
+        car.position.x += 0.02
+    }
 }
