@@ -32,7 +32,7 @@
 import MetalKit
 
 class Node {
-    var parnet: Node?
+    var parent: Node?
     var children: [Node] = []
   var name: String = "untitled"
   var position: float3 = [0, 0, 0]
@@ -56,6 +56,14 @@ class Node {
   var size: float3 {
     return boundingBox.maxBounds - boundingBox.minBounds
   }
+
+    var worldTransform: float4x4 {
+        if let parent {
+            return parent.worldTransform * modelMatrix
+        }
+
+        return modelMatrix
+    }
   
   func update(deltaTime: Float) {
     // override this
@@ -63,12 +71,12 @@ class Node {
 
     final func add(childNode: Node) {
         children.append(childNode)
-        childNode.parnet = self
+        childNode.parent = self
     }
 
     final func remove(childNode: Node) {
         for child in childNode.children {
-            child.parnet = self
+            child.parent = self
             children.append(child)
         }
 
@@ -79,7 +87,7 @@ class Node {
             return
         }
         children.remove(at: index)
-        childNode.parnet = nil
+        childNode.parent = nil
     }
 
 }

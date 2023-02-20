@@ -156,7 +156,7 @@ extension Model: Renderable {
       
       let currentLocalTransform =
         mesh.transform?.currentTransform ?? .identity()
-      uniforms.modelMatrix = modelMatrix * currentLocalTransform
+      uniforms.modelMatrix = worldTransform * currentLocalTransform
 
       uniforms.normalMatrix = uniforms.modelMatrix.upperLeft
       renderEncoder.setVertexBytes(&uniforms,

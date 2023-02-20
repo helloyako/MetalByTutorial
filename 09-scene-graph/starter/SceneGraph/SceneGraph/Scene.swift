@@ -90,11 +90,11 @@ class Scene {
     }
 
     final func remove(node: Node) {
-        if let parent = node.parnet {
+        if let parent = node.parent {
             parent.remove(childNode: node)
         } else {
             for child in node.children {
-                child.parnet = nil
+                child.parent = nil
             }
             node.children = []
         }
