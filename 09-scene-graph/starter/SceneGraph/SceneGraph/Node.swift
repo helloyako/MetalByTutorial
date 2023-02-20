@@ -64,6 +64,14 @@ class Node {
 
         return modelMatrix
     }
+
+    var forwardVector: float3 {
+        normalize([sin(rotation.y), 0, cos(rotation.y)])
+    }
+
+    var rightVector: float3 {
+        [forwardVector.z, forwardVector.y, -forwardVector.x]
+    }
   
   func update(deltaTime: Float) {
     // override this

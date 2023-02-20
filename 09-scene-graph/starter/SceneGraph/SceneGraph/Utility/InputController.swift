@@ -42,6 +42,9 @@ protocol MouseDelegate {
 }
 
 class InputController {
+    var player: Node?
+    var translationSpeed: Float = 2.0
+    var rotationSpeed: Float = 1.0
   var keyboardDelegate: KeyboardDelegate?
   var directionKeysDown: Set<KeyboardControl> = []
   
@@ -66,6 +69,39 @@ class InputController {
     let locationInWindow: float2 = [Float(event.locationInWindow.x), Float(event.locationInWindow.y)]
     mouseDelegate?.mouseEvent(mouse: mouse, state: state, delta: delta, location: locationInWindow)
   }
+
+    public func updatePlayer(deltaTime: Float) {
+        guard let player else {
+            return
+        }
+
+        let translationSpeed = deltaTime * translationSpeed
+        let rotationSpeed = deltaTime * rotationSpeed
+        var direction: float3 = [0, 0, 0]
+        for key in directionKeysDown {
+            switch key {
+            case .w:
+                direction.z += 1
+            case .a:
+                direction.x -= 1
+            case .s:
+                direction.z -= 1
+            case .d:
+                direction.x += 1
+            case .left, .q:
+                player.rotation.y -= rotationSpeed
+            case .right, .e:
+                player.rotation.y += rotationSpeed
+            default:
+                break
+            }
+        }
+
+        if direction != [0, 0, 0] {
+            direction = normalize(direction)
+            player.position += (direction.z * player.forwardVector + direction.x * player.rightVector) * translationSpeed
+        }
+    }
 }
 
 enum InputState {

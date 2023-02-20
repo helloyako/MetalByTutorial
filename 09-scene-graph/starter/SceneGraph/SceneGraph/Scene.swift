@@ -33,6 +33,8 @@
 import Foundation
 
 class Scene {
+    let inputController = InputController()
+    
     var sceneSize: CGSize
     var cameras = [Camera()]
     var currentCameraIndex = 0
@@ -56,6 +58,7 @@ class Scene {
     }
 
     final func update(deltaTime: Float) {
+        updatePlayer(deltaTime: deltaTime)
         uniforms.projectionMatrix = camera.projectionMatrix
         uniforms.viewMatrix = camera.viewMatrix
         fragmentUniforms.cameraPosition = camera.position
@@ -110,5 +113,9 @@ class Scene {
             camera.aspect = Float(size.width / size.height)
         }
         sceneSize = size
+    }
+
+    private func updatePlayer(deltaTime: Float) {
+        inputController.updatePlayer(deltaTime: deltaTime)
     }
 }

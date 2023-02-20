@@ -52,6 +52,8 @@ class GameScene: Scene {
         skeleton.runAnimation(name: "sit")
 
         camera.position = [0, 1.2, -4]
+
+        inputController.player = camera
     }
 
     override func updateScene(deltaTime: Float) {

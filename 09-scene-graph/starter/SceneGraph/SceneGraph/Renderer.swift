@@ -123,9 +123,7 @@ extension Renderer: MTKViewDelegate {
     
     // update all the models' poses
     let deltaTime = 1 / Float(Renderer.fps)
-    for model in models {
-        scene.update(deltaTime: deltaTime)
-    }
+      scene.update(deltaTime: deltaTime)
     
     renderEncoder.setDepthStencilState(depthStencilState)
 
