@@ -37,7 +37,10 @@ class GameScene: Scene {
     let car = Model(name: "racing-car.obj")
     let skeleton = Model(name: "skeleton.usda")
 
+    var inCar = false
+
     override func setupScene() {
+        inputController.keyboardDelegate = self
         ground.tiling = 32
         add(node: ground)
 
@@ -57,6 +60,36 @@ class GameScene: Scene {
     }
 
     override func updateScene(deltaTime: Float) {
-        car.position.x += 0.02
+        
+    }
+}
+
+extension GameScene: KeyboardDelegate {
+    func keyPressed(key: KeyboardControl, state: InputState) -> Bool {
+        switch key {
+        case .c where state == .ended:
+            let camera = cameras[0]
+            if inCar {
+                remove(node: car)
+                add(node: car)
+                car.position = camera.position + (camera.rightVector * 1.3)
+                car.position.y = 0
+                car.rotation = camera.rotation
+                inputController.translationSpeed = 2.0
+
+            } else {
+                remove(node: skeleton)
+                remove(node: car)
+                add(node: car, parent: camera)
+                car.position = [0.35, -1, 0.1]
+                car.rotation = [0, 0, 0]
+                inputController.translationSpeed = 10.0
+            }
+            inCar.toggle()
+            return false
+        default:
+            break
+        }
+        return true
     }
 }
