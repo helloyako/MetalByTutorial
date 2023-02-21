@@ -74,7 +74,8 @@ class CarScene: Scene {
       for body in bodies {
           physicsController.addStaticBody(node: body)
       }
-    
+
+      physicsController.holdAllCollided = true
   }
   
   override func sceneSizeWillChange(to size: CGSize) {
@@ -86,6 +87,18 @@ class CarScene: Scene {
                          top: cameraSize, bottom: -cameraSize)
     orthoCamera.rect = rect
   }
+
+    override func updateCollidedPlayer() -> Bool {
+        for body in physicsController.collidedBodies {
+            if body.name == "oilcan.obj" {
+                print("power-up")
+                remove(node: body)
+                physicsController.removeBody(node: body)
+                return true
+            }
+        }
+        return false
+    }
   
 }
 

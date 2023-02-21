@@ -124,9 +124,14 @@ class Scene {
         let holdRotation = node.rotation
 
         inputController.updatePlayer(deltaTime: deltaTime)
-        if physicsController.checkCollisions() {
+        if physicsController.checkCollisions(), !updateCollidedPlayer() {
             node.position = holdPosition
             node.rotation = holdRotation
         }
+    }
+
+    func updateCollidedPlayer() -> Bool {
+        // override this
+        return false
     }
 }

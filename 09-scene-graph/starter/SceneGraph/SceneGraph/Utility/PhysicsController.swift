@@ -37,6 +37,9 @@ class PhysicsController {
   
   var dynamicBody: Node?
   var staticBodies: [Node] = []
+
+    var holdAllCollided = false
+    var collidedBodies: [Node] = []
   
   func addStaticBody(node: Node) {
     removeBody(node: node)
@@ -52,6 +55,7 @@ class PhysicsController {
   }
 
     func checkCollisions() -> Bool {
+        collidedBodies = []
         guard let node = dynamicBody else {
             return false
         }
@@ -62,9 +66,13 @@ class PhysicsController {
             let bodyPosition = body.worldTransform.columns.3.xyz
             let d = distance(nodePosition, bodyPosition)
             if d < nodeRadius + bodyRadius {
-                return true
+                if holdAllCollided {
+                    collidedBodies.append(body)
+                } else {
+                    return true
+                }
             }
         }
-        return false
+        return collidedBodies.count != 0
     }
 }
