@@ -62,6 +62,10 @@ class GameScene: Scene {
         orthoCamera.position = [0, 2, 0]
         orthoCamera.rotation.x = .pi / 2
         cameras.append(orthoCamera)
+
+        let tpCamera = ThirdPersonCamera(focus: skeleton)
+        cameras.append(tpCamera)
+        currentCameraIndex = 2
     }
 
     override func updateScene(deltaTime: Float) {

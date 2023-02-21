@@ -138,3 +138,21 @@ class OrthographicCamera: Camera {
         return float4x4(orthographic: rect, near: near, far: far)
     }
 }
+
+class ThirdPersonCamera: Camera {
+    var focus: Node
+    var focusDistance: Float = 3
+    var focusHeight: Float = 1.2
+
+    override var viewMatrix: float4x4 {
+        position = focus.position - focusDistance * focus.forwardVector
+        position.y = focusHeight
+        rotation.y = focus.rotation.y
+        return super.viewMatrix
+    }
+
+    init(focus: Node) {
+        self.focus = focus
+        super.init()
+    }
+}
