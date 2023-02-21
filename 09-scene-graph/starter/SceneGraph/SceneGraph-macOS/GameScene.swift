@@ -50,15 +50,14 @@ class GameScene: Scene {
         car.position = [-0.8, 0, 0]
         add(node: car)
 
-        skeleton.position = [-0.35, -0.2, -0.35]
-        skeleton.rotation = [0, 0, 0]
-        add(node: skeleton, parent: car)
-
-        skeleton.runAnimation(name: "sit")
+        skeleton.position = [1.6, 0, 0]
+        skeleton.rotation = [0, .pi, 0]
+        add(node: skeleton)
+        skeleton.runAnimation(name: "idle")
 
         camera.position = [0, 1.2, -4]
 
-        inputController.player = camera
+        inputController.player = skeleton
 
         orthoCamera.position = [0, 2, 0]
         orthoCamera.rotation.x = .pi / 2
