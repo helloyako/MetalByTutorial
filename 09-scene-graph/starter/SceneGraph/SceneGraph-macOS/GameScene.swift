@@ -53,7 +53,9 @@ class GameScene: Scene {
         skeleton.position = [1.6, 0, 0]
         skeleton.rotation = [0, .pi, 0]
         add(node: skeleton)
-        skeleton.runAnimation(name: "idle")
+        skeleton.runAnimation(name: "walk")
+        skeleton.currentAnimation?.speed = 2.0
+        skeleton.pauseAnimation()
 
         camera.position = [0, 1.2, -4]
 
@@ -108,6 +110,13 @@ extension GameScene: KeyboardDelegate {
             currentCameraIndex = 0
         case .key1:
             currentCameraIndex = 1
+        case .w, .s, .a, .d:
+            if state == .began {
+                skeleton.resumeAnimation()
+            }
+            if state == .ended {
+                skeleton.pauseAnimation()
+            }
         default:
             break
         }
