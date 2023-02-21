@@ -33,6 +33,7 @@
 import Foundation
 
 class Scene {
+    let physicsController = PhysicsController()
     let inputController = InputController()
     
     var sceneSize: CGSize
@@ -116,6 +117,16 @@ class Scene {
     }
 
     private func updatePlayer(deltaTime: Float) {
+        guard let node = inputController.player else {
+            return
+        }
+        let holdPosition = node.position
+        let holdRotation = node.rotation
+
         inputController.updatePlayer(deltaTime: deltaTime)
+        if physicsController.checkCollisions() {
+            node.position = holdPosition
+            node.rotation = holdRotation
+        }
     }
 }

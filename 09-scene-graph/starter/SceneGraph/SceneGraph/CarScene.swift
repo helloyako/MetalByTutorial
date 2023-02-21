@@ -69,6 +69,11 @@ class CarScene: Scene {
     orthoCamera.position = [0, 2, 0]
     orthoCamera.rotation.x = .pi / 2
     cameras.append(orthoCamera)
+
+      physicsController.dynamicBody = car
+      for body in bodies {
+          physicsController.addStaticBody(node: body)
+      }
     
   }
   

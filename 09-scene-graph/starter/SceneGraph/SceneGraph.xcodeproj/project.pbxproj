@@ -48,6 +48,7 @@
 		13EF5AE422CC391400696D69 /* Renderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13EF5AE322CC391400696D69 /* Renderable.swift */; };
 		A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06F1A5E29A1C297004D7ED7 /* Scene.swift */; };
 		A06F1A6129A26C6F004D7ED7 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06F1A6029A26C6F004D7ED7 /* GameScene.swift */; };
+		A07E42CA29A4C0AB00E978C1 /* CarScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1389966A22D431320010C9B1 /* CarScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -374,6 +375,7 @@
 				1389964C22D429000010C9B1 /* GameView.swift in Sources */,
 				130F080C22C4343D001B7909 /* Node.swift in Sources */,
 				A06F1A6129A26C6F004D7ED7 /* GameScene.swift in Sources */,
+				A07E42CA29A4C0AB00E978C1 /* CarScene.swift in Sources */,
 				A06F1A5F29A1C297004D7ED7 /* Scene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
