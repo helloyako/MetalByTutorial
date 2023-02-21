@@ -119,3 +119,22 @@ class ArcballCamera: Camera {
     _viewMatrix = updateViewMatrix()
   }
 }
+
+class OrthographicCamera: Camera {
+    var rect = Rectangle(left: 10, right: 10, top: 10, bottom: 10)
+
+    override init() {
+        super.init()
+    }
+
+    init(rect: Rectangle, near: Float, far: Float) {
+        super.init()
+        self.rect = rect
+        self.near = near
+        self.far = far
+    }
+
+    override var projectionMatrix: float4x4 {
+        return float4x4(orthographic: rect, near: near, far: far)
+    }
+}

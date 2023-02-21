@@ -39,6 +39,8 @@ class GameScene: Scene {
 
     var inCar = false
 
+    let orthoCamera = OrthographicCamera()
+
     override func setupScene() {
         inputController.keyboardDelegate = self
         ground.tiling = 32
@@ -57,10 +59,22 @@ class GameScene: Scene {
         camera.position = [0, 1.2, -4]
 
         inputController.player = camera
+
+        orthoCamera.position = [0, 2, 0]
+        orthoCamera.rotation.x = .pi / 2
+        cameras.append(orthoCamera)
     }
 
     override func updateScene(deltaTime: Float) {
         
+    }
+
+    override func sceneSizeWillChange(to size: CGSize) {
+        super.sceneSizeWillChange(to: size)
+        let cameraSize: Float = 10
+        let ratio = Float(sceneSize.width / sceneSize.height)
+        let rect = Rectangle(left: -cameraSize * ratio, right: cameraSize * ratio, top: cameraSize, bottom: -cameraSize)
+        orthoCamera.rect = rect
     }
 }
 
@@ -87,6 +101,10 @@ extension GameScene: KeyboardDelegate {
             }
             inCar.toggle()
             return false
+        case .key0:
+            currentCameraIndex = 0
+        case .key1:
+            currentCameraIndex = 1
         default:
             break
         }
