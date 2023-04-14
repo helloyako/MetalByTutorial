@@ -35,6 +35,12 @@ public typealias float3 = SIMD3<Float>
 public typealias float4 = SIMD4<Float>
 
 public class Renderer: NSObject, MTKViewDelegate {
+
+    let particleCount = 10000
+    let maxEmitters = 8
+    var emitters: [Emitter] = []
+    let life: Float = 256
+    var timer: Float = 0
     
   public let device: MTLDevice!
   let commandQueue: MTLCommandQueue!
@@ -73,6 +79,8 @@ public class Renderer: NSObject, MTKViewDelegate {
           let drawable = view.currentDrawable else {
       return
     }
+      
+      update(size: view.drawableSize)
     
     // first command encoder
     let renderEncoder = makeRenderCommandEncoder(commandBuffer, drawable.texture)
@@ -85,4 +93,16 @@ public class Renderer: NSObject, MTKViewDelegate {
   }
   
   public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+
+    func update(size: CGSize) {
+        timer += 1
+        if timer >= 50 {
+            timer = 0
+            if emitters.count > maxEmitters {
+                emitters.removeFirst()
+            }
+            let emitter = Emitter(particleCount: particleCount, size: size, life: life, device: device)
+            emitters.append(emitter)
+        }
+    }
 }
