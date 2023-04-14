@@ -41,6 +41,8 @@ public class Renderer: NSObject, MTKViewDelegate {
     var emitters: [Emitter] = []
     let life: Float = 256
     var timer: Float = 0
+
+    let pipelineState: MTLComputePipelineState!
     
   public let device: MTLDevice!
   let commandQueue: MTLCommandQueue!
@@ -49,17 +51,32 @@ public class Renderer: NSObject, MTKViewDelegate {
     let initialized = Renderer.initializeMetal()
     device = initialized?.device
     commandQueue = initialized?.commandQueue
+      pipelineState = initialized?.pipelineState
     
     super.init()
   }
   
-  private static func initializeMetal() -> (
-    device: MTLDevice, commandQueue: MTLCommandQueue)?
+  private static func initializeMetal() -> (device: MTLDevice,
+                                            commandQueue: MTLCommandQueue,
+                                            pipelineState: MTLComputePipelineState)?
   {
     guard let device = MTLCreateSystemDefaultDevice(),
-      let commandQueue = device.makeCommandQueue() else { return nil }
-    
-    return (device, commandQueue)
+          let commandQueue = device.makeCommandQueue(),
+          let path = Bundle.main.path(forResource: "Shaders", ofType: "metal") else { return nil }
+      let pipelineState: MTLComputePipelineState
+
+      do {
+          let input = try String(String(contentsOf: path, encoding: .utf8))
+          let library = try device.makeLibrary(source: input, options: nil)
+          guard let function = library.makeFunction(name: "compute") else { return nil }
+          pipelineState = try device.makeComputePipelineState(function: function)
+      } catch {
+          print(error.localizedDescription)
+          return nil
+      }
+
+
+      return (device, commandQueue, pipelineState)
   }
   
   func makeRenderCommandEncoder(_ commandBuffer: MTLCommandBuffer, _ texture: MTLTexture) -> MTLRenderCommandEncoder {
@@ -79,7 +96,7 @@ public class Renderer: NSObject, MTKViewDelegate {
           let drawable = view.currentDrawable else {
       return
     }
-      
+
       update(size: view.drawableSize)
     
     // first command encoder
