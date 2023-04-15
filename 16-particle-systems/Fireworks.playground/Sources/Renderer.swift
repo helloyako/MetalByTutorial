@@ -61,14 +61,15 @@ public class Renderer: NSObject, MTKViewDelegate {
                                             pipelineState: MTLComputePipelineState)?
   {
     guard let device = MTLCreateSystemDefaultDevice(),
-          let commandQueue = device.makeCommandQueue(),
-          let path = Bundle.main.path(forResource: "Shaders", ofType: "metal") else { return nil }
+          let commandQueue = device.makeCommandQueue()  else { return nil }
       let pipelineState: MTLComputePipelineState
 
       do {
-          let input = try String(String(contentsOf: path, encoding: .utf8))
-          let library = try device.makeLibrary(source: input, options: nil)
-          guard let function = library.makeFunction(name: "compute") else { return nil }
+          let library = device.makeDefaultLibrary()
+          guard let function = library?.makeFunction(name: "compute") else {
+              print("failed makeFunction")
+              return nil
+          }
           pipelineState = try device.makeComputePipelineState(function: function)
       } catch {
           print(error.localizedDescription)
@@ -94,14 +95,34 @@ public class Renderer: NSObject, MTKViewDelegate {
   public func draw(in view: MTKView) {
     guard let commandBuffer = commandQueue.makeCommandBuffer(),
           let drawable = view.currentDrawable else {
+        print("failed makeCommandBuffer")
       return
     }
+
+
 
       update(size: view.drawableSize)
     
     // first command encoder
-    let renderEncoder = makeRenderCommandEncoder(commandBuffer, drawable.texture)
-    renderEncoder.endEncoding()
+      //1
+      guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else {
+          print("faile make encoder")
+          return
+      }
+      computeEncoder.setComputePipelineState(pipelineState)
+      computeEncoder.setTexture(drawable.texture, index: 0)
+
+      //2
+      var width = pipelineState.threadExecutionWidth
+      var height = pipelineState.maxTotalThreadsPerThreadgroup / width
+      let threadsPerThreadgroup = MTLSizeMake(width, height, 1)
+      width = Int(view.drawableSize.width)
+      height = Int(view.drawableSize.height)
+      var threadPerGrid = MTLSizeMake(width, height, 1)
+
+      //3
+      computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+      computeEncoder.endEncoding()
     
     // second command encoder
     
