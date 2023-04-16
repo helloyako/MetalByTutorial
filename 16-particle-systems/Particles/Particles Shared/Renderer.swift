@@ -54,6 +54,10 @@ class Renderer: NSObject, MTKViewDelegate {
     metalView.clearColor = MTLClearColor(red: 0.2, green: 0.2,
                                          blue: 0.2, alpha: 1)
     buildPipelineStates()
+
+      let snowEmitter = snow(size: metalView.drawableSize)
+      snowEmitter.position = [0, Float(metalView.drawableSize.height)]
+      emitters.append(snowEmitter)
   }
   
   private func buildPipelineStates() {
@@ -80,20 +84,54 @@ class Renderer: NSObject, MTKViewDelegate {
   }
   
   public func draw(in view: MTKView) {
+      emitters.forEach {
+          $0.emit()
+      }
     guard let commandBuffer = commandQueue.makeCommandBuffer(),
           let descriptor = view.currentRenderPassDescriptor,
           let drawable = view.currentDrawable else { return }
     
     // first command encoder
     // update the particle emitters
+      guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+      computeEncoder.setComputePipelineState(particlesPipelineState)
+      let width = particlesPipelineState.threadExecutionWidth
+      let threadsPerGroup = MTLSizeMake(width, 1, 1)
+      for emitter in emitters {
+          let threadsPerGrid = MTLSizeMake(emitter.particleCount, 1, 1)
+          computeEncoder.setBuffer(emitter.particleBuffer, offset: 0, index: 0)
+          computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerGroup)
+      }
+      computeEncoder.endEncoding()
 
     
     // second command encoder
     // render the particle emitters
+      // 1
+      let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)!
+      renderEncoder.setRenderPipelineState(renderPipelineState)
+
+      // 2
+      var size = float2(Float(view.drawableSize.width), Float(view.drawableSize.height))
+      renderEncoder.setVertexBytes(&size, length: MemoryLayout<float2>.stride, index: 0)
+
+      // 3
+      for emitter in emitters {
+          renderEncoder.setVertexBuffer(emitter.particleBuffer, offset: 0, index: 1)
+          renderEncoder.setVertexBytes(&emitter.position, length: MemoryLayout<float2>.stride, index: 2)
+          renderEncoder.setFragmentTexture(emitter.particleTexture, index: 0)
+          renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: 1, instanceCount: emitter.currentParticles)
+      }
+      renderEncoder.endEncoding()
     
     commandBuffer.present(drawable)
     commandBuffer.commit()
   }
   
-  public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+  public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+      emitters.removeAll()
+      let snowEmitter = snow(size: size)
+      snowEmitter.position = [0, Float(size.height)]
+      emitters.append(snowEmitter)
+  }
 }
