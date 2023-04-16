@@ -43,6 +43,7 @@ public class Renderer: NSObject, MTKViewDelegate {
     var timer: Float = 0
 
     let pipelineState: MTLComputePipelineState!
+    let particlePipelineState: MTLComputePipelineState!
     
   public let device: MTLDevice!
   let commandQueue: MTLCommandQueue!
@@ -52,32 +53,41 @@ public class Renderer: NSObject, MTKViewDelegate {
     device = initialized?.device
     commandQueue = initialized?.commandQueue
       pipelineState = initialized?.pipelineState
+      particlePipelineState = initialized?.particlePipelineState
     
     super.init()
   }
   
   private static func initializeMetal() -> (device: MTLDevice,
                                             commandQueue: MTLCommandQueue,
-                                            pipelineState: MTLComputePipelineState)?
+                                            pipelineState: MTLComputePipelineState,
+                                            particlePipelineState: MTLComputePipelineState)?
   {
     guard let device = MTLCreateSystemDefaultDevice(),
           let commandQueue = device.makeCommandQueue()  else { return nil }
       let pipelineState: MTLComputePipelineState
+      let particlePipelineState: MTLComputePipelineState
 
       do {
           let library = device.makeDefaultLibrary()
-          guard let function = library?.makeFunction(name: "compute") else {
+          guard let function = library?.makeFunction(name: "compute"),
+                    let particleFunction = library?.makeFunction(name: "particleKernel") else {
               print("failed makeFunction")
               return nil
           }
           pipelineState = try device.makeComputePipelineState(function: function)
+          particlePipelineState = try device.makeComputePipelineState(function: particleFunction)
+
       } catch {
           print(error.localizedDescription)
           return nil
       }
 
 
-      return (device, commandQueue, pipelineState)
+      return (
+        device, commandQueue,
+        pipelineState: pipelineState,
+        particlePipelineState: particlePipelineState)
   }
   
   func makeRenderCommandEncoder(_ commandBuffer: MTLCommandBuffer, _ texture: MTLTexture) -> MTLRenderCommandEncoder {
@@ -99,8 +109,6 @@ public class Renderer: NSObject, MTKViewDelegate {
       return
     }
 
-
-
       update(size: view.drawableSize)
     
     // first command encoder
@@ -118,13 +126,28 @@ public class Renderer: NSObject, MTKViewDelegate {
       let threadsPerThreadgroup = MTLSizeMake(width, height, 1)
       width = Int(view.drawableSize.width)
       height = Int(view.drawableSize.height)
-      var threadPerGrid = MTLSizeMake(width, height, 1)
+      var threadsPerGrid = MTLSizeMake(width, height, 1)
 
       //3
-      computeEncoder.dispatchThreads(threadPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+      computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
       computeEncoder.endEncoding()
     
     // second command encoder
+      // 1
+      guard let particleEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+      particleEncoder.setComputePipelineState(particlePipelineState)
+      particleEncoder.setTexture(drawable.texture, index: 0)
+
+      // 2
+      threadsPerGrid = MTLSizeMake(particleCount, 1, 1)
+      for emitter in emitters {
+          // 3
+          let particleBuffer = emitter.particleBuffer
+          particleEncoder.setBuffer(particleBuffer, offset: 0, index: 0)
+          particleEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+      }
+      particleEncoder.endEncoding()
+
     
     commandBuffer.present(drawable)
     commandBuffer.commit()
