@@ -78,6 +78,12 @@ class Renderer: NSObject, MTKViewDelegate {
       descriptor.vertexFunction = vertexFunction
       descriptor.fragmentFunction = fragmentFunction
       descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        // 1
+        descriptor.colorAttachments[0].isBlendingEnabled = true
+        descriptor.colorAttachments[0].rgbBlendOperation = .add
+        // 2
+        descriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+        descriptor.colorAttachments[0].destinationRGBBlendFactor = .one
       renderPipelineState = try
         Renderer.device.makeRenderPipelineState(descriptor: descriptor)
       renderPipelineState = try Renderer.device.makeRenderPipelineState(descriptor: descriptor)
