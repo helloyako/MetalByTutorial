@@ -55,9 +55,12 @@ class Renderer: NSObject, MTKViewDelegate {
                                          blue: 0.2, alpha: 1)
     buildPipelineStates()
 
-      let snowEmitter = snow(size: metalView.drawableSize)
-      snowEmitter.position = [0, Float(metalView.drawableSize.height)]
-      emitters.append(snowEmitter)
+//      let snowEmitter = snow(size: metalView.drawableSize)
+//      snowEmitter.position = [0, Float(metalView.drawableSize.height)]
+//      emitters.append(snowEmitter)
+      let fireEmitter = fire(size: metalView.drawableSize)
+      fireEmitter.position = [0, -10]
+      emitters.append(fireEmitter)
   }
   
   private func buildPipelineStates() {
@@ -130,8 +133,11 @@ class Renderer: NSObject, MTKViewDelegate {
   
   public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
       emitters.removeAll()
-      let snowEmitter = snow(size: size)
-      snowEmitter.position = [0, Float(size.height)]
-      emitters.append(snowEmitter)
+//      let snowEmitter = snow(size: size)
+//      snowEmitter.position = [0, Float(size.height)]
+//      emitters.append(snowEmitter)
+      let fireEmitter = fire(size: size)
+      fireEmitter.position = [0, -10]
+      emitters.append(fireEmitter)
   }
 }
