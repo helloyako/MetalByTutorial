@@ -35,4 +35,5 @@ let frame = CGRect(x: 0, y: 0, width: 500, height: 500)
 let delegate = Renderer()
 let view = MTKView(frame: frame, device: delegate.device)
 view.delegate = delegate
+view.framebufferOnly = false
 PlaygroundPage.current.liveView = view
